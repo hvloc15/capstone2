@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from algorithms.utils import read_opencv_image
 from api.renderer import ApiJSONRenderer
-
+from algorithms.ocr_algorithms import run_ocr_tesseract, run_ocr_kraken, run_ocr_ocropus
 
 
 class OCR(APIView):
@@ -24,17 +24,14 @@ class OCR(APIView):
 
         return Response({"message":text}, status=status.HTTP_200_OK)
 
-    def tesseract(self, inmemory_image):
-        image = read_opencv_image(inmemory_image)
-        return pytesseract.image_to_string(image, lang="vietrain")
+    def tesseract(self, image_path):
+        return run_ocr_tesseract(image_path)
 
-    def kraken(self, inmemory_image):
-        image = read_opencv_image(inmemory_image)
-        return pytesseract.image_to_string(image, lang="eng")
+    def kraken(self, image_path):
+        return run_ocr_kraken(image_path)
 
-    def ocropus(self, inmemory_image):
-        image = read_opencv_image(inmemory_image)
-        return pytesseract.image_to_string(image, lang="vie")
+    def ocropus(self, image_path):
+        return run_ocr_ocropus(image_path)
 
     def get(self, request):
         return Response({"message":"OK"}, status=status.HTTP_200_OK)
